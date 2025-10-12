@@ -1,6 +1,5 @@
 import { TypeParam } from "@/components/typeParam";
 import { Class, Method, Property } from "@/types/base";
-import { isPrimitive } from "@/util/isPrimitive";
 import Link from "next/link";
 
 
@@ -40,11 +39,13 @@ export function ClassDefinition({ dir, subDir, className, getDefinition }: { dir
                 {getDefinition?.constructor ? (
                     <div className="flex flex-row w-full">
                         <div className="flex flex-col gap-2 justify-center font-mono text-lg border rounded-lg px-2 py-[0.5px] border-gray-300">
-                            {
-                                getDefinition.constructor.args && getDefinition.constructor.args.length > 0 ? getDefinition.constructor.args.map((arg, index) => (
-                                    <p key={`${arg.name}-${index}`}>constructor( {arg.name}: {arg.type}{index !== (getDefinition.constructor!.args!.length - 1) ? ", " : ""} )</p>
-                                )) : <p>constructor()</p>
-                            }
+                            <p>{`constructor(`} 
+                                {
+                                    getDefinition.constructor.args && getDefinition.constructor.args.length > 0 && getDefinition.constructor.args.map((arg, index) => (
+                                        <span key={`${arg.name}-${index}`}>{arg.name}: <TypeParam Ttype={arg.type} dir={dir} subDir={subDir} />{index !== (getDefinition.constructor!.args!.length - 1) ? ", " : ""}</span>
+                                    ))
+                                }
+                            {`)`}</p>
                         </div>
                     </div>
                 ) : <p> No constructor defined </p>}
@@ -54,11 +55,13 @@ export function ClassDefinition({ dir, subDir, className, getDefinition }: { dir
                     <div className="flex flex-col mt-4">
                         <h2 className="text-2xl font-semibold"> Generics </h2>
                         <div className="font-mono text-xl bg-gray-200 px-2 py-[0.5px] rounded-xl mt-4">
+                            {"<"}
                             {
                                 getDefinition.genericTypes.map(
-                                    (generic, index) => <span key={`gene-${index}`}>{"<"}{generic}{">"}</span>
+                                    (generic, index) => <span key={`gene-${index}`}>{generic}{index !== (getDefinition.genericTypes?.length || 1) - 1 && <span className="mx-2">,</span>}</span>
                                 )
                             }
+                            {">"}
                         </div>
                     </div>
                 )

@@ -7,14 +7,18 @@ type ArgChildren = {
     searchName?: string
 }
 
-type DocDataItem = typeof docdata[0]
+type DocDataItem = typeof docdata.typeDocs[0]
+
+export async function getProjectName() {
+    return docdata.readFile as string
+}
 
 export async function readDocData() {
-    return docdata as DocDataItem[]
+    return docdata.typeDocs as DocDataItem[]
 }
 
 export async function searchDocData(children: ArgChildren) {
-    const found = docdata.find((item) => {
+    const found = docdata.typeDocs.find((item) => {
         return item.directory === children.dir && item.subDirectory === children.subDir
     })
 
@@ -30,7 +34,7 @@ export async function searchDocData(children: ArgChildren) {
 
 export async function searchInAllDocData( className: string ) {
     const searchInAll = ( className : string ) => {
-        for( const item of docdata ) {
+        for( const item of docdata.typeDocs ) {
             for( const res of item.result ) {
                 for( const child of res ) {
                     if( child.name === className ) {
@@ -51,7 +55,7 @@ export async function searchInAllDocData( className: string ) {
 
 export async function searchClassData(children: ArgChildren) {
 
-    const found = docdata.find((item) => {
+    const found = docdata.typeDocs.find((item) => {
         return item.directory === children.dir && item.subDirectory === children.subDir
     })
 

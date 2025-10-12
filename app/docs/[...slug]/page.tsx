@@ -1,4 +1,4 @@
-import { searchClassData, searchDocData, searchInAllDocData } from "@/core/readDocdata"
+import { searchClassData, searchDocData } from "@/core/readDocdata"
 import { Class, Interface, Method, TypeT } from "@/types/base"
 import Link from "next/link"
 import { ClassDefinition } from "./(components)/classDefinition"

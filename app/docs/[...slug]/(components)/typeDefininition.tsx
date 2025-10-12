@@ -1,6 +1,5 @@
 import { TypeParam } from "@/components/typeParam";
-import { Interface, TypeT } from "@/types/base";
-import Link from "next/link";
+import { TypeT } from "@/types/base";
 
 
 

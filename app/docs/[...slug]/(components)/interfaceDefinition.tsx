@@ -1,6 +1,5 @@
 import { TypeParam } from "@/components/typeParam";
 import { Interface, Property } from "@/types/base";
-import { isPrimitive } from "@/util/isPrimitive";
 import Link from "next/link";
 
 
