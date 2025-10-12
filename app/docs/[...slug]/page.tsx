@@ -19,7 +19,7 @@ export default async function DocPage({ params }: { params: { slug: string[] } }
         }) as (Class | Interface | TypeT)[] | null
         return (
             <div className="flex flex-col w-full p-12">
-                <h1 className="text-3xl font-bold mb-8"> {dir}/{subDir} </h1>
+                <h1 className="text-3xl font-bold mb-8"> Directory <span className="font-mono">{dir}/{subDir}</span> </h1>
                 <div className="text-xl font-semibold mb-4"> Classes & Interfaces </div>
                 {
                     !getDefinition?.length && <p> No classes or interfaces found in this directory. </p>

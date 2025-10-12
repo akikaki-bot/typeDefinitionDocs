@@ -58,6 +58,7 @@ export interface Class extends Base {
     extends? : string
     implements? : string[]
     constructor? : Method
+    genericTypes? : string[]
     properties : Array<Property | Method>
     isAbstract : boolean
 }
@@ -65,6 +66,7 @@ export interface Class extends Base {
 export interface Interface extends Base {
     type : "interface"
     extends? : string[]
+    genericTypes? : string[]
     properties : Property[]
     isAbstract : boolean
 }
@@ -78,6 +80,7 @@ export interface TypeAlias extends Base {
     type : "typeAliasLike"
     isObjectLike : boolean
     properties ?: ArrayTOrT<Primitive | object>
+    genericTypes? : string[]
 }
 
 export interface TypeT extends TypeAlias {

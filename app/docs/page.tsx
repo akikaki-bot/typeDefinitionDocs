@@ -8,7 +8,7 @@ export default async function Docs() {
 
     return (
         <div className="flex flex-col w-full min-h-full p-12">
-            <h1 className="text-3xl font-bold mb-8"> MisTsKey@1.1.0 </h1>
+            <h1 className="text-3xl font-bold mb-8"> RRouter@1.0.1 </h1>
             <div className="flex flex-col gap-2">
                 <h2 className="text-2xl font-bold"> SourceDirectories </h2>
                 {
