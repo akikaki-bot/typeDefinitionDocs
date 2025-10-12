@@ -28,7 +28,29 @@ export async function searchDocData(children: ArgChildren) {
     return null
 }
 
+export async function searchInAllDocData( className: string ) {
+    const searchInAll = ( className : string ) => {
+        for( const item of docdata ) {
+            for( const res of item.result ) {
+                for( const child of res ) {
+                    if( child.name === className ) {
+                        return {
+                            dir: item.directory,
+                            subDir: item.subDirectory,
+                            result: child
+                        }
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    return searchInAll( className )
+}
+
 export async function searchClassData(children: ArgChildren) {
+
     const found = docdata.find((item) => {
         return item.directory === children.dir && item.subDirectory === children.subDir
     })
@@ -39,8 +61,8 @@ export async function searchClassData(children: ArgChildren) {
             item.find((child) => child.name === children.searchName)
         ).filter((item) => item !== undefined) as Children[]
 
-        console.log( result );
         return result.flat()
     }
+
     return null
 }

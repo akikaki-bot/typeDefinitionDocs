@@ -1,4 +1,4 @@
-import { searchClassData, searchDocData } from "@/core/readDocdata"
+import { searchClassData, searchDocData, searchInAllDocData } from "@/core/readDocdata"
 import { Class, Interface, Method, TypeT } from "@/types/base"
 import Link from "next/link"
 import { ClassDefinition } from "./(components)/classDefinition"
@@ -85,6 +85,11 @@ export default async function DocPage({ params }: { params: { slug: string[] } }
         ))
     }
 
-    return <div> Definition not found </div>
+    return (
+        <div className="flex flex-col w-full p-12">
+            <h1 className="text-3xl font-bold mb-8"> No definition found for <span className="font-mono">{className}</span> in this doc.</h1>
+            <p> Please check the URL or go back to the <Link className="text-blue-500 hover:underline" href="/docs">documentation home page</Link>. </p>
+        </div>
+    )
 
 }

@@ -1,6 +1,7 @@
 import { isPrimitive } from "@/util/isPrimitive";
 import Link from "next/link";
 import { Fragment } from "react";
+import { TypeDefinitionLink } from "./TypeDefinitionLink";
 
 
 export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: string, subDir: string }) {
@@ -9,6 +10,35 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
     if( splitTypes[0].length === 0 ) splitTypes.shift();
     const isGeneric = Ttype.includes("<") && Ttype.includes(">");
 
+    if (isGeneric) {
+        const genericStart = Ttype.indexOf("<");
+        const genericEnd = Ttype.lastIndexOf(">");
+        const mainType = Ttype.substring(0, genericStart).trim();
+        const genericContent = Ttype.substring(genericStart + 1, genericEnd).trim();
+        const genericTypes = genericContent.split(",").map(type => type.trim());
+
+        if( genericContent.includes("<") && genericContent.includes(">") ) {
+            return (
+                <>
+                    <TypeParam Ttype={mainType} dir={dir} subDir={subDir} />{"<"}
+                    <TypeParam Ttype={genericContent} dir={dir} subDir={subDir} />
+                    {">"}
+                </>
+            )
+        }
+
+        return (
+            <>
+                <TypeParam Ttype={mainType} dir={dir} subDir={subDir} />{"<"}{genericTypes.map((genType, index) => (
+                    <Fragment key={`${genType}-${index}`}>
+                        <TypeParam Ttype={genType} dir={dir} subDir={subDir} />
+                        {index !== genericTypes.length - 1 && <span className="mx-2">,</span>}
+                    </Fragment>
+                ))}{">"}
+            </>
+        );
+    }
+        
     if (splitTypes.length > 1) {
         return (
             <>
@@ -21,24 +51,7 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
             </>
         );
     }
-    
-    if (isGeneric) {
-        const genericStart = Ttype.indexOf("<");
-        const genericEnd = Ttype.lastIndexOf(">");
-        const mainType = Ttype.substring(0, genericStart).trim();
-        const genericContent = Ttype.substring(genericStart + 1, genericEnd).trim();
-        const genericTypes = genericContent.split(",").map(type => type.trim());
-        return (
-        <>
-            <TypeParam Ttype={mainType} dir={dir} subDir={subDir} />{"<"}{genericTypes.map((genType, index) => (
-                <Fragment key={`${genType}-${index}`}>
-                    <TypeParam Ttype={genType} dir={dir} subDir={subDir} />
-                    {index !== genericTypes.length - 1 && <span className="mx-2">,</span>}
-                </Fragment>
-            ))}{">"}
-        </>
-        );
-    }
+
     const isArrowFunction = Ttype.includes("=>");
     if (isArrowFunction) {
         const arrowIndex = Ttype.indexOf("=>");
@@ -59,14 +72,11 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
     return (
         <>
             {
-                isPrimitive(Ttype) || Literal ? 
+                isPrimitive(Ttype.replaceAll("[]", "")) || Literal ? 
                 <span className="text-green-600">{Ttype.replaceAll("[]", "")}</span> : 
-                <Link 
-                    href={`/docs/${dir}/${subDir}/${Ttype.replaceAll("[]", "")}`} 
-                    className="text-blue-500"
-                >
+                <TypeDefinitionLink typeName={Ttype.replaceAll("[]", "")} >
                     {Ttype.replaceAll("[]", "")}
-                </Link>
+                </TypeDefinitionLink>
             }
             { isArray && <span>[]</span> }
         </> 
