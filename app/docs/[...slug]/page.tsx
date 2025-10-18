@@ -4,8 +4,29 @@ import Link from "next/link"
 import { ClassDefinition } from "./(components)/classDefinition"
 import { InterfaceDefinition } from "./(components)/interfaceDefinition"
 import { TypeDefinition } from "./(components)/typeDefininition"
+import { Metadata } from "next"
 
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
+    const [dir, subDir, ...classNames] = (await params).slug
+
+    const className = classNames.join("/")
+    const getDefinition = await searchClassData({ dir, subDir, searchName: className })
+    if( !getDefinition ) {
+        return {
+            title: `Definition Not Found - ${dir}/${subDir}`,
+            description: `No documentation found for ${className} in ${dir}/${subDir} module.`,
+        }
+    }
+
+    const definition = getDefinition[0]
+
+    
+    return {
+        title: `${definition?.name || "Definition"} - ${dir}/${subDir}`,
+        description: `Documentation for ${definition?.name || "definition"} in ${dir}/${subDir} module.`,
+    }
+}
 
 export default async function DocPage({ params }: { params: { slug: string[] } }) {
     const [dir, subDir, ...classNames] = (await params).slug
