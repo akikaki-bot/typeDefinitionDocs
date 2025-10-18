@@ -67,7 +67,7 @@ export interface Interface extends Base {
     type : "interface"
     extends? : string[]
     genericTypes? : string[]
-    properties : Property[]
+    properties : (Property | Method)[]
     isAbstract : boolean
 }
 

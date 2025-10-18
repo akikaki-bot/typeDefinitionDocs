@@ -40,8 +40,21 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
 
     const splitTypes = Ttype.split("|").map(type => type.trim());
     if( splitTypes[0].length === 0 ) splitTypes.shift();
-    const isGeneric = Ttype.includes("<") && Ttype.includes(">");
 
+    if (splitTypes.length > 1) {
+        return (
+            <>
+                {splitTypes.map((type, index) => (
+                    <span key={`${type}-${index}`}>
+                        <TypeParam Ttype={type} dir={dir} subDir={subDir} />
+                        {index !== splitTypes.length - 1 && <span className="mx-2">|</span>}
+                    </span>
+                ))}
+            </>
+        );
+    }
+
+    const isGeneric = Ttype.includes("<") && Ttype.includes(">");
     if (isGeneric) {
         const genericStart = Ttype.indexOf("<");
         const genericEnd = Ttype.lastIndexOf(">");
@@ -96,19 +109,6 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
                         {index !== genericTypes.length - 1 && <span className="mx-2">,</span>}
                     </Fragment>
                 ))}{">"}
-            </>
-        );
-    }
-        
-    if (splitTypes.length > 1) {
-        return (
-            <>
-                {splitTypes.map((type, index) => (
-                    <span key={`${type}-${index}`}>
-                        <TypeParam Ttype={type} dir={dir} subDir={subDir} />
-                        {index !== splitTypes.length - 1 && <span className="mx-2">|</span>}
-                    </span>
-                ))}
             </>
         );
     }

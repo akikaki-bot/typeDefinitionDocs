@@ -18,9 +18,9 @@ export function InterfaceDefinition({ dir, subDir, className, getDefinition }: {
 
     return (
         <div className="flex flex-col w-full p-12">
-            <h1 
+            <h1
                 className="text-3xl font-bold"
-                style={{ fontFamily: "var(--font-geist-sans)"}}
+                style={{ fontFamily: "var(--font-geist-sans)" }}
             > <span className="text-blue-600">interface</span> {className} </h1>
             <div className="flex flex-row">
                 {getDefinition?.extends && (
@@ -43,10 +43,39 @@ export function InterfaceDefinition({ dir, subDir, className, getDefinition }: {
                     </div>
                 )
             }
+            {
+                getDefinition?.properties.some((item) => item.name == "<callSignature>") && (
+                    <div className="flex flex-col mt-4">
+                        <h2 className="text-2xl font-semibold"> CallSignature </h2>
+                        <div className="flex flex-col gap-2 font-mono mt-4 text-lg">
+                            {
+                                getDefinition?.properties && getDefinition?.properties.filter((item) => item.name == "<callSignature>" && item.type == "method").map((item, index) => item.name && item.isFunction && (
+                                    <div className="flex flex-row w-full" key={`${item.name}-${index}`}>
+                                        <div
+                                            className="flex flex-col items-start gap-[1px] w-full"
+                                            style={{
+                                                borderTop: index !== 0 ? "1px solid #e5e7eb" : "none",
+                                            }}
+                                        >
+                                                <p>{`(`} 
+                                                    {
+                                                        item.args && item.args.length > 0 && item.args.map((arg, index) => (
+                                                            <span key={`${arg.name}-${index}`}>{arg.name}: <TypeParam Ttype={arg.type} dir={dir} subDir={subDir} />{index !== (item.args!.length - 1) ? ", " : ""}</span>
+                                                        ))
+                                                    }
+                                                {`)`}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                )
+            }
             <div className="flex flex-col mt-4">
                 <h2 className="text-2xl font-semibold"> Properties </h2>
                 {
-                    getDefinition?.properties && getDefinition?.properties.sort(sortFunc).filter((item) => !item.isFunction).map((item, index) => item.name && (
+                    getDefinition?.properties && getDefinition?.properties.filter( item => item.type == "property").sort(sortFunc).filter((item) => !item.isFunction).map((item, index) => item.name && (
                         <div className="flex flex-row w-full" key={`${item.name}-${index}`}>
                             <div
                                 className="flex flex-col items-start gap-[1px] py-4 w-full"
