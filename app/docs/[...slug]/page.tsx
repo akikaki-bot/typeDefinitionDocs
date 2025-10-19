@@ -21,9 +21,23 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
     const definition = getDefinition[0]
 
-    
+    const convertType = ( def : string ) => {
+        switch( def ) {
+            case "class":
+                return "Class"
+            case "interface":
+                return "Interface"
+            case "method":
+                return "Method"
+            case "typeAliasLike":
+                return "Type Alias"
+            default:
+                return ""
+        }
+    }
+
     return {
-        title: `${definition?.name || "Definition"} - ${dir}/${subDir}`,
+        title: `${convertType(definition?.type)} | ${definition?.name || "Definition"} - ${dir}/${subDir}`,
         description: `Documentation for ${definition?.name || "definition"} in ${dir}/${subDir} module.`,
     }
 }
@@ -41,7 +55,7 @@ export default async function DocPage({ params }: { params: { slug: string[] } }
         return (
             <div className="flex flex-col w-full p-12">
                 <h1 className="text-3xl font-bold mb-8"> Directory <span className="font-mono">{dir}/{subDir}</span> </h1>
-                <div className="text-xl font-semibold mb-4"> Classes & Interfaces </div>
+                <div className="text-xl font-semibold mb-4"> Classes & Interfaces & Types </div>
                 {
                     !getDefinition?.length && <p> No classes or interfaces found in this directory. </p>
                 }

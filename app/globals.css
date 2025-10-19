@@ -24,3 +24,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+:root {
+  scrollbar-color: rgba(100, 100, 100, 0.5) transparent;
+  scrollbar-width: thin;
+  scrollbar-track-color: rgba(100, 100, 100, 0.1);
+  scrollbar-thumb-color: rgba(100, 100, 100, 0.5);
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}

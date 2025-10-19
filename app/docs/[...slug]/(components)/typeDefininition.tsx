@@ -9,7 +9,7 @@ export function TypeDefinition({ dir, subDir, className, getDefinition }: { dir:
             <h1 
                 className="text-3xl font-bold"
                 style={{ fontFamily: "var(--font-geist-sans)"}}
-            > <span className="text-yellow-600">type</span> {className} </h1>
+            > <span className="text-yellow-600">typealias</span> {className} </h1>
             {
                 getDefinition.genericTypes && getDefinition.genericTypes.length > 0 && (
                     <div className="flex flex-col mt-4">

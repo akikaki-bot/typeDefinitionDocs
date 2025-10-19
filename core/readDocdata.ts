@@ -53,6 +53,20 @@ export async function searchInAllDocData( className: string ) {
     return searchInAll( className )
 }
 
+export async function getAllDefinitions() {
+    const allDefinitions: { dir: string, subDir: string, definitions: Children[] }[] = []
+
+    for( const item of docdata.typeDocs ) {
+        const definitions = item.result.flat()
+        allDefinitions.push({
+            dir: item.directory,
+            subDir: item.subDirectory,
+            definitions: definitions.filter((item) => item !== undefined) as Children[]
+        })
+    }
+    return allDefinitions
+}
+
 export async function searchClassData(children: ArgChildren) {
 
     const found = docdata.typeDocs.find((item) => {

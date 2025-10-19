@@ -9,7 +9,7 @@ export type Children =
 | Class
 | Interface 
 | Enum 
-| Function 
+| Method
 | TypeAlias  
 | Namespace;
 
