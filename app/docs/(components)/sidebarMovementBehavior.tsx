@@ -1,13 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export function SidebarMovementBehavior({
     children
 }: {
     children : React.ReactNode
 }) {
-    const [ isOpen, setIsOpen ] = useState(false)
+    const [ isOpen, setIsOpen ] = useState( false )
+    const [ windowWidth, setWindowWidth ] = useState(0)
+
+    useEffect( () => {
+        const handleResize = () => {
+            setWindowWidth( window.innerWidth )
+            if( window.innerWidth >= 1024 ) {
+                setIsOpen( true )
+            } else {
+                setIsOpen( false )
+            }
+        }
+        window.addEventListener( "resize", handleResize )
+        handleResize()
+        return () => window.removeEventListener( "resize", handleResize )
+    }, [] )
 
     return (
         <>
@@ -25,8 +40,8 @@ export function SidebarMovementBehavior({
                 style={{ 
                     transform: isOpen ? "translateX(0%)" : "translateX(-100%)", 
                     transition: "transform 0.3s ease-in-out",
-                    display: window.innerWidth >= 1024 ? "flex" : isOpen ? "flex" : "none",
-                    width: window.innerWidth >= 1024 ? "20%" : isOpen ? "100%" : "0",
+                    display: windowWidth >= 1024 ? "flex" : isOpen ? "flex" : "none",
+                    width: windowWidth >= 1024 ? "20%" : isOpen ? "100%" : "0",
                 }}
             >
                 {children}
