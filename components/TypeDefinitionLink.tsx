@@ -1,4 +1,4 @@
-import { searchInAllDocData } from "@/core/readDocdata";
+import { searchInAllDocData } from "@/core/newReadDocData";
 import Link from "next/link";
 
 
@@ -11,9 +11,8 @@ export async function TypeDefinitionLink({
 }) {
     const searchInAll = await searchInAllDocData(typeName)
     if (!searchInAll) return <span className="text-red-500">{children}</span>
-    if (!searchInAll.dir || !searchInAll.subDir) return <span className="text-red-500">{children}</span>
     return <Link
         className="text-blue-500"
-        href={`/docs/${searchInAll?.dir}/${searchInAll?.subDir}/${typeName}`}
+        href={`/docs/${typeName}:${searchInAll.type}`}
     >{children}</Link>
 }

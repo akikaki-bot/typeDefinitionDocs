@@ -1,5 +1,5 @@
-import { searchClassData, searchDocData } from "@/core/readDocdata"
-import { Class, Interface, Method, TypeT } from "@/types/base"
+import { getProjectName, searchDocData } from "@/core/newReadDocData"
+import { Children, Class, Interface, Method, TypeT } from "@/types/base"
 import Link from "next/link"
 import { ClassDefinition } from "./(components)/classDefinition"
 import { InterfaceDefinition } from "./(components)/interfaceDefinition"
@@ -8,18 +8,19 @@ import { Metadata } from "next"
 
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string[] }> }): Promise<Metadata> {
-    const [dir, subDir, ...classNames] = (await params).slug
+    const [ propertyName ] = (await params).slug
+    const projectName = await getProjectName()
 
-    const className = classNames.join("/")
-    const getDefinition = await searchClassData({ dir, subDir, searchName: className })
+    const [ className, type] = decodeURIComponent(propertyName).split(":")
+    const getDefinition = await searchDocData({ name: className, type }) || null
     if( !getDefinition ) {
         return {
-            title: `Definition Not Found - ${dir}/${subDir}`,
-            description: `No documentation found for ${className} in ${dir}/${subDir} module.`,
+            title: `Definition Not Found - ${projectName}`,
+            description: `No documentation found for ${className} in ${projectName}.`,
         }
     }
 
-    const definition = getDefinition[0]
+    const definition = getDefinition
 
     const convertType = ( def : string ) => {
         switch( def ) {
@@ -37,57 +38,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
 
     return {
-        title: `${convertType(definition?.type)} | ${definition?.name || "Definition"} - ${dir}/${subDir}`,
-        description: `Documentation for ${definition?.name || "definition"} in ${dir}/${subDir} module.`,
+        title: `${convertType(definition?.type)} | ${definition?.name || "Definition"} - ${projectName}`,
+        description: `Documentation for ${definition?.name || "definition"} in ${projectName} module.`,
     }
 }
 
 export default async function DocPage({ params }: { params: { slug: string[] } }) {
-    const [dir, subDir, ...classNames] = (await params).slug
+    const [ propertyName ] = (await params).slug
 
-    if (classNames.length === 0) {
-        const getDefinition = (await searchDocData({ dir, subDir }))?.sort((a, b) => {
-            if (a.type === b.type) {
-                return a.name.localeCompare(b.name)
-            }
-            return a.type.localeCompare(b.type)
-        }) as (Class | Interface | TypeT)[] | null
-        return (
-            <div className="flex flex-col w-full p-12">
-                <h1 className="text-3xl font-bold mb-8"> Directory <span className="font-mono">{dir}/{subDir}</span> </h1>
-                <div className="text-xl font-semibold mb-4"> Classes & Interfaces & Types </div>
-                {
-                    !getDefinition?.length && <p> No classes or interfaces found in this directory. </p>
-                }
-                <div className="flex flex-col gap-2">
-                    {
-                        getDefinition?.map(
-                            (item, index) => (
-                                <div className="flex flex-row w-full items-center" key={`${item.name}-${index}`}>
-                                    <p 
-                                        className="font-mono px-2 py-[0.5px] rounded-xl"
-                                        style={{
-                                            backgroundColor: item.type === "class" ? "#10b981" : item.type === "interface" ? "#3b82f6" : "#eab308",
-                                        }}
-                                    > {item.type} </p>
-                                    <Link className="text-xl px-2 py-1 " href={`/docs/${dir}/${subDir}/${item.name}`}>{item.name}</Link>
-                                </div>
-                            )
-                        )
-                    }
-                </div>
-            </div>
-        )
-    }
+    const [ className, type] = decodeURIComponent(propertyName).split(":")
+    const getDefinition = await searchDocData({ name: className, type }) || null
 
-    const className = classNames.join("/")
-    const getDefinition = await searchClassData({ dir, subDir, searchName: className }) as (Class | Method | Interface | TypeT)[]
-
-    const helper = (getDefinition: Class | Method | Interface | TypeT) => {
+    const helper = (getDefinition: Children) => {
         if (getDefinition.type === "class") {
             return <ClassDefinition
-                dir={dir}
-                subDir={subDir}
                 className={className}
                 getDefinition={getDefinition}
             />
@@ -95,8 +59,6 @@ export default async function DocPage({ params }: { params: { slug: string[] } }
 
         if (getDefinition.type === "interface") {
             return <InterfaceDefinition
-                dir={dir}
-                subDir={subDir}
                 className={className}
                 getDefinition={getDefinition}
             />
@@ -104,20 +66,14 @@ export default async function DocPage({ params }: { params: { slug: string[] } }
 
         if (getDefinition.type === "typeAliasLike") {
             return <TypeDefinition
-                dir={dir}
-                subDir={subDir}
                 className={className}
                 getDefinition={getDefinition}
             />
         }
     }
 
-    if (getDefinition && getDefinition.length > 0) {
-        return getDefinition.map((item, index) => (
-            <div key={`${item.name}-${index}`}>
-                {helper(item)}
-            </div>
-        ))
+    if (getDefinition) {
+        return helper(getDefinition)
     }
 
     return (

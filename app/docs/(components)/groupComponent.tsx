@@ -15,7 +15,7 @@ export function GroupComponent({
         <div className="flex flex-col w-full">
             <button 
                 onClick={ () => setIsOpen( prev => !prev ) }
-                className="hover:bg-white transition-all w-full flex flex-row justify-between px-6 py-1"
+                className="hover:bg-white hover:dark:bg-zinc-800 transition-all w-full flex flex-row justify-between px-6 py-1"
             >
                 <h1 className="text-xl font-bold">{CategoryName}</h1>
                 <h1 className="text-xl font-bold">{isOpen ? "▼" : "▲"}</h1>

@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import { TypeDefinitionLink } from "./TypeDefinitionLink";
 
 
-export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: string, subDir: string }) {
+export function TypeParam({ Ttype } : { Ttype : string }) {
     
     if (!Ttype || Ttype.length === 0) return <span className="text-red-500">unknown</span>;
 
@@ -13,7 +13,7 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
     if( isIntersection.length > 1 ) {
         return isIntersection.map(
             (type, index) => <Fragment key={`${type}-${index}`}>
-                                <TypeParam Ttype={type} dir={dir} subDir={subDir} />
+                                <TypeParam Ttype={type} />
                                 {index !== isIntersection.length - 1 && <span className="mx-2">&</span>}
                             </Fragment>
         )
@@ -30,7 +30,7 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
                 return (
                     <Fragment key={`${trimmedPart}-${index}`}>
                         <span>{trimmedPart.split(":")[0]}: </span>
-                        <TypeParam Ttype={trimmedPart.split(":")[1]} dir={dir} subDir={subDir} />
+                        <TypeParam Ttype={trimmedPart.split(":")[1]} />
                         {index !== arr.length - 1 && <span>; </span>}
                     </Fragment>
                 );
@@ -46,7 +46,7 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
             <>
                 {splitTypes.map((type, index) => (
                     <span key={`${type}-${index}`}>
-                        <TypeParam Ttype={type} dir={dir} subDir={subDir} />
+                        <TypeParam Ttype={type} />
                         {index !== splitTypes.length - 1 && <span className="mx-2">|</span>}
                     </span>
                 ))}
@@ -65,8 +65,8 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
         if( genericContent.includes("<") && genericContent.includes(">") ) {
             return (
                 <>
-                    <TypeParam Ttype={mainType} dir={dir} subDir={subDir} />{"<"}
-                    <TypeParam Ttype={genericContent} dir={dir} subDir={subDir} />
+                    <TypeParam Ttype={mainType}  />{"<"}
+                    <TypeParam Ttype={genericContent} />
                     {">"}
                 </>
             )
@@ -75,10 +75,10 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
         if( genericContent.includes("{") && genericContent.includes("}") ) {
             return (
                 <>
-                    <TypeParam Ttype={mainType} dir={dir} subDir={subDir} />{"<"}{genericTypes.map((genType, index) => (
+                    <TypeParam Ttype={mainType} />{"<"}{genericTypes.map((genType, index) => (
                         <Fragment key={`${genType}-${index}`}>                        
                             { genType.split(":")[0] }<span className="mr-2">:</span>
-                            <TypeParam Ttype={genType.split(":")[1].replace('}',"")} dir={dir} subDir={subDir} />
+                            <TypeParam Ttype={genType.split(":")[1].replace('}',"")} />
                             {index !== genericTypes.length - 1 && <span className="mx-2">,</span>}
                         </Fragment>
                     ))}{" }>"}
@@ -94,18 +94,18 @@ export function TypeParam({ Ttype, dir, subDir } : { Ttype : string , dir: strin
             return (
                 <>
                     {
-                        beforeArrow.includes("(") ? beforeArrow : <>{beforeArrow.map( ( v, index ) => <Fragment key={index}> <span>{v.split(':')[0]}</span> : <TypeParam key={`${v}-${index}`} Ttype={v.split(':')[1]} dir={dir} subDir={subDir} /> </Fragment>)}</>
+                        beforeArrow.includes("(") ? beforeArrow : <>{beforeArrow.map( ( v, index ) => <Fragment key={index}> <span>{v.split(':')[0]}</span> : <TypeParam key={`${v}-${index}`} Ttype={v.split(':')[1]}  /> </Fragment>)}</>
                     }
-                    )<span className="mx-2">{"=>"}</span> <TypeParam Ttype={afterArrow} dir={dir} subDir={subDir} />
+                    )<span className="mx-2">{"=>"}</span> <TypeParam Ttype={afterArrow}  />
                 </>
             )
         }
 
         return (
             <>
-                <TypeParam Ttype={mainType} dir={dir} subDir={subDir} />{"<"}{genericTypes.map((genType, index) => (
+                <TypeParam Ttype={mainType} />{"<"}{genericTypes.map((genType, index) => (
                     <Fragment key={`${genType}-${index}`}>
-                        <TypeParam Ttype={genType} dir={dir} subDir={subDir} />
+                        <TypeParam Ttype={genType} />
                         {index !== genericTypes.length - 1 && <span className="mx-2">,</span>}
                     </Fragment>
                 ))}{">"}

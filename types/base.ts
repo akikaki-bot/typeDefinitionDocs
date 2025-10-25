@@ -10,7 +10,7 @@ export type Children =
 | Interface 
 | Enum 
 | Method
-| TypeAlias  
+| TypeT  
 | Namespace;
 
 type Primitive = string | number | boolean | null | undefined;

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 
 
-export function InterfaceDefinition({ dir, subDir, className, getDefinition }: { dir: string, subDir: string, className: string, getDefinition: Interface }) {
+export function InterfaceDefinition({ className, getDefinition }: { className: string, getDefinition: Interface }) {
 
     const sortFunc = (a: (Property), b: (Property)): 0 | 1 | -1 => {
         if (a.isFunction !== b.isFunction) {
@@ -24,8 +24,8 @@ export function InterfaceDefinition({ dir, subDir, className, getDefinition }: {
             > <span className="text-blue-600">interface</span> {className} </h1>
             <div className="flex flex-row">
                 {getDefinition?.extends && (
-                    <div className="font-mono text-lg bg-gray-200 px-2 py-[0.5px] rounded-xl mr-2">
-                        <span className="italic">extends</span> <Link className="text-blue-500" href={`/docs/${dir}/${subDir}/${getDefinition.extends}`}>{getDefinition.extends}</Link>
+                    <div className="font-mono text-lg bg-gray-200 dark:bg-zinc-900 px-2 py-[0.5px] rounded-xl mr-2">
+                        <span className="italic">extends</span> <Link className="text-blue-500" href={`/docs/${getDefinition.extends}:interface`}>{getDefinition.extends}</Link>
                     </div>
                 )}
             </div>
@@ -36,7 +36,7 @@ export function InterfaceDefinition({ dir, subDir, className, getDefinition }: {
                         <div className="flex flex-col gap-2 font-mono mt-4 text-lg">
                             {
                                 getDefinition.genericTypes.map(
-                                    (generic, index) => <p key={`gene-${index}`}><span className="bg-gray-200 px-4 py-1 rounded-xl">{generic}</span></p>
+                                    (generic, index) => <p key={`gene-${index}`}><span className="bg-gray-200 dark:bg-zinc-800 px-4 py-1 rounded-xl">{generic}</span></p>
                                 )
                             }
                         </div>
@@ -52,15 +52,12 @@ export function InterfaceDefinition({ dir, subDir, className, getDefinition }: {
                                 getDefinition?.properties && getDefinition?.properties.filter((item) => item.name == "<callSignature>" && item.type == "method").map((item, index) => item.name && item.isFunction && (
                                     <div className="flex flex-row w-full" key={`${item.name}-${index}`}>
                                         <div
-                                            className="flex flex-col items-start gap-[1px] w-full"
-                                            style={{
-                                                borderTop: index !== 0 ? "1px solid #e5e7eb" : "none",
-                                            }}
+                                            className={`flex flex-col items-start gap-[1px] py-4 w-full ${index !== 0 ? "border-t border-gray-300 dark:border-zinc-700" : "border-none"}`}
                                         >
                                                 <p>{`(`} 
                                                     {
                                                         item.args && item.args.length > 0 && item.args.map((arg, index) => (
-                                                            <span key={`${arg.name}-${index}`}>{arg.name}: <TypeParam Ttype={arg.type} dir={dir} subDir={subDir} />{index !== (item.args!.length - 1) ? ", " : ""}</span>
+                                                            <span key={`${arg.name}-${index}`}>{arg.name}: <TypeParam Ttype={arg.type} />{index !== (item.args!.length - 1) ? ", " : ""}</span>
                                                         ))
                                                     }
                                                 {`)`}</p>
@@ -78,13 +75,10 @@ export function InterfaceDefinition({ dir, subDir, className, getDefinition }: {
                     getDefinition?.properties && getDefinition?.properties.filter( item => item.type == "property").sort(sortFunc).filter((item) => !item.isFunction).map((item, index) => item.name && (
                         <div className="flex flex-row w-full" key={`${item.name}-${index}`}>
                             <div
-                                className="flex flex-col items-start gap-[1px] py-4 w-full"
-                                style={{
-                                    borderTop: index !== 0 ? "1px solid #e5e7eb" : "none",
-                                }}
+                                className={`flex flex-col items-start gap-[1px] py-4 w-full ${index !== 0 ? "border-t border-gray-300 dark:border-zinc-700" : "border-none"}`}
                             >
-                                {item.isPrivate && <div className="font-mono border-fuchsia-600 text-sm bg-fuchsia-200 rounded-xl px-2 py-[0.5px]">Private</div>}
-                                <div className="font-mono text-lg"> <span className="font-semibold">{item.name}</span> : <TypeParam Ttype={item.Ttype} dir={dir} subDir={subDir} /></div>
+                                {item.isPrivate && <div className="font-mono border-fuchsia-600 dark:border-fuchsia-950 text-sm bg-fuchsia-200 dark:bg-fuchsia-900 rounded-xl px-2 py-[0.5px]">Private</div>}
+                                <div className="font-mono text-lg"> <span className="font-semibold">{item.name}</span> : <TypeParam Ttype={item.Ttype} /></div>
                             </div>
                         </div>
                     ))
